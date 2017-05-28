@@ -37,7 +37,7 @@ public class TodoDao {
 		return jdbc.queryForObject(TodoSqls.COUNT_TODO, params, Integer.class);
 	}
 	
-	
+
 	
 	public Todo selectById(Integer id){
 		RowMapper<Todo> rowMapper = BeanPropertyRowMapper.newInstance(Todo.class);
@@ -59,6 +59,12 @@ public class TodoDao {
 		return jdbc.query(TodoSqls.SELECT_ALL,  params, rowMapper);
 	}
 	
+	public List<Todo> selectByCompleted(Integer completed){
+		RowMapper<Todo> rowMapper = BeanPropertyRowMapper.newInstance(Todo.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("completed", completed);
+		return jdbc.query(TodoSqls.SELECT_BY_COMPLETED, params, rowMapper);
+	}	
 	
 	public int deleteById(Integer id){
 		Map<String, ?> params = Collections.singletonMap("id",  id);
@@ -67,6 +73,11 @@ public class TodoDao {
 	
 	public int update(Todo todo){
 		SqlParameterSource params = new BeanPropertySqlParameterSource(todo);
-		return jdbc.update(TodoSqls.UPDATE,  params);
+		return jdbc.update(TodoSqls.UPDATE, params);
+	}
+	
+	public int clearCompleted(){
+		Map<String, ?> params = Collections.emptyMap();
+		return jdbc.update(TodoSqls.DELETE_ALL_COMPLETED, params);
 	}
 }

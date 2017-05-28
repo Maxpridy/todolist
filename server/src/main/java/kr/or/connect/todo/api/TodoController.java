@@ -42,6 +42,16 @@ public class TodoController {
 		return service.findAll();
 	}
 	
+	@GetMapping("/active")
+	Collection<Todo> getActiveTodos(){
+		return service.findByCompleted(0);
+	}
+	
+	@GetMapping("/completed")
+	Collection<Todo> getCompletedTodos(){
+		return service.findByCompleted(1);
+	}
+	
 	@GetMapping("/{id}")
 	Todo read(@PathVariable Integer id){
 		return service.findById(id);
@@ -70,4 +80,9 @@ public class TodoController {
 		service.delete(id);
 	}
 	
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	void clearCompleted() {
+		service.clearCompleted();
+	}
 }

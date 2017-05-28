@@ -18,6 +18,10 @@ public class Todo {
 		this.todo = todo;
 	}
 	
+	public Todo(int completed){
+		this.completed = completed;
+	}
+	
 	public Todo(Integer id, String todo){
 		this.todo = todo;
 	}
