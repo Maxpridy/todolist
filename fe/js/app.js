@@ -13,9 +13,7 @@
 		},
 
 		render: function () {
-
 			this.todos = this.fetchAllTodos();
-			console.log(App.todos);
 			this.FilteredTodos();
 			this.getActiveTodoNumsAndS();
 			$('#new-todo').focus();
@@ -29,7 +27,7 @@
 			$('#completedTodos').on('click', this.completedRender.bind(this));
 
 			$('.todo-list').on('click', '.destroy', this.destroy.bind(this));
-			$('.todo-list').on('change', '.toggle', this.checkCheckbox.bind(this));
+			$('.todo-list').on('change', '.toggle', this.update.bind(this));
 
 			$('.clear-completed').on('click', this.clearCompleted.bind(this));
 		},
@@ -53,18 +51,6 @@
 			$('.filters li a.selected').removeClass();
 			$('#completedTodos').attr('class', 'selected');
 			this.render();
-		},
-
-		getIndexTodos: function (e_target) {
-			var id = $(e_target).closest('li').data('id');
-			var todos = this.todos;
-			var i = todos.length;
-
-			while (i--) {
-				if (todos[i].id === id) {
-					return i;
-				}
-			}
 		},
 
 		FilteredTodos: function(){
@@ -98,14 +84,11 @@
 		getActiveTodoNumsAndS: function(){
 			var leftActiveTodos = 0;
 			var resultText;
-			console.log(this.todos);
-			console.log(App.todos);
 			for (var i=0; i<this.todos.length; i++){
 				if(this.todos[i].completed == 0){
 					leftActiveTodos++;
 				}
 			}
-
 
 			if(leftActiveTodos == 1){
 				resultText = leftActiveTodos + " item left";
@@ -115,18 +98,6 @@
 			}
 			$('.todo-count strong').text(resultText);
 
-		},
-
-		checkCheckbox: function (e) {
-			var i = this.getIndexTodos(e.target);
-			if(this.todos[i].completed === 0){
-				this.todos[i].completed = 1;
-			}
-			else{
-				this.todos[i].completed = 0;
-			}
-
-			this.update(this.todos, i);
 		},
 
 		create: function (event) {
@@ -204,20 +175,40 @@
 			})
 		},
 
-		update: function(data, i){
-			var target = data[i];
-			var strtarget = JSON.stringify(data[i]);
+		update: function(event){
+			var e_target = event.target;
 			$.ajax({
-				"url":"./api/todos/" + target.id,
-				"method": "PUT",
-				"data": strtarget,
+				"url": "./api/todos/",
+				"method": "GET",
 				"dataType": "json",
-				"headers": {
-					"content-type": "application/json",
+			}).done(function(data){
+				var id = $(e_target).closest('li').data('id');
+				var i = data.length;
+
+				while (i--) {
+					if (data[i].id === id) {
+						break;
+					}
 				}
-			}).done(function(){
-				App.render();
-			}).fail(function(){
+				data[i].completed = (data[i].completed === 0 ? 1 : 0);
+
+				var target = data[i];
+				var strtarget = JSON.stringify(target);
+				$.ajax({
+					"url":"./api/todos/" + target.id,
+					"method": "PUT",
+					"data": strtarget,
+					"dataType": "json",
+					"headers": {
+						"content-type": "application/json",
+					}
+				}).done(function(data){
+					App.render();
+				}).fail(function(error){
+					alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+					location.href = "./";
+				})
+			}).fail(function(error){
 				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
 				location.href = "./";
 			})

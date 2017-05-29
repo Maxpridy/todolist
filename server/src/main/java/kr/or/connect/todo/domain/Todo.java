@@ -41,8 +41,6 @@ public class Todo {
 		this.date = date;
 	}
 	
-	
-	
 	public Integer getId() {
 		return id;
 	}
