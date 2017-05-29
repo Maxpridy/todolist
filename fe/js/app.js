@@ -13,6 +13,7 @@
 		},
 
 		render: function () {
+
 			this.todos = this.fetchAllTodos();
 			console.log(App.todos);
 			this.FilteredTodos();
@@ -204,25 +205,22 @@
 		},
 
 		update: function(data, i){
-			var idval = data[i].id;
+			var target = data[i];
+			var strtarget = JSON.stringify(data[i]);
 			$.ajax({
-				"async": false,
-				"url":"./api/todos/" + idval,
+				"url":"./api/todos/" + target.id,
 				"method": "PUT",
-				"data": data[i],
-				"data": JSON.stringify(data[i]),
+				"data": strtarget,
 				"dataType": "json",
 				"headers": {
 					"content-type": "application/json",
-					"cache-control": "no-cache"
-				},
-				error: function() {
-					alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-					location.href = "./";
 				}
-			});
-
-			this.render();
+			}).done(function(){
+				App.render();
+			}).fail(function(){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
+			})
 		},
 
 		clearCompleted: function(){
