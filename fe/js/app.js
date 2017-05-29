@@ -99,10 +99,11 @@
 					}
 				}
 
-				if(leftActiveTodos == 1){
+				if(leftActiveTodos == 0){
+					resultText = "no item left";
+				} else if(leftActiveTodos == 1){
 					resultText = leftActiveTodos + " item left";
-				}
-				else{
+				} else{
 					resultText = leftActiveTodos + " items left";
 				}
 				$('.todo-count strong').text(resultText);
