@@ -5,7 +5,6 @@
 	var STATE; // 0: all, 1: active, 2: completed
 
 	var App = {
-
 		init: function(){
 			STATE = 0;
 			this.render();
@@ -74,7 +73,13 @@
 					injectClassCompleted = ' class="completed"';
 					injectChecked = ' checked';
 				}
-				lis.push("<li" + injectClassCompleted + " data-id=" + todos[i].id + ">" + "<div class='view'><input class='toggle' type='checkbox'" + injectChecked + "><label>" + todos[i].todo + "</label><button class='destroy'></button></div></li>");
+				lis.push("<li" + injectClassCompleted + " data-id=" + todos[i].id + ">" + "\
+							<div class='view'>\
+								<input class='toggle' type='checkbox'" + injectChecked + ">\
+								<label>" + todos[i].todo + "</label>\
+								<button class='destroy'></button>\
+							</div>\
+						</li>");
 			}
 
 			$('.todo-list').html(lis);
