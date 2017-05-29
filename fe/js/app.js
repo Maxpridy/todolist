@@ -13,8 +13,7 @@
 		},
 
 		render: function () {
-			this.todos = this.fetchAllTodos();
-			this.FilteredTodos();
+			this.getFilteredTodos();
 			this.getActiveTodoNumsAndS();
 			$('#new-todo').focus();
 		},
@@ -53,7 +52,7 @@
 			this.render();
 		},
 
-		FilteredTodos: function(){
+		getFilteredTodos: function(){
 			if(STATE === 1){
 				return this.getTodos("/active");
 			}
@@ -82,22 +81,30 @@
 		},
 
 		getActiveTodoNumsAndS: function(){
-			var leftActiveTodos = 0;
-			var resultText;
-			for (var i=0; i<this.todos.length; i++){
-				if(this.todos[i].completed == 0){
-					leftActiveTodos++;
+			$.ajax({
+				"url": "./api/todos/active",
+				"method": "GET",
+				"dataType": "json"
+			}).done(function(data){
+				var leftActiveTodos = 0;
+				var resultText;
+				for (var i=0; i<data.length; i++){
+					if(data[i].completed == 0){
+						leftActiveTodos++;
+					}
 				}
-			}
 
-			if(leftActiveTodos == 1){
-				resultText = leftActiveTodos + " item left";
-			}
-			else{
-				resultText = leftActiveTodos + " items left";
-			}
-			$('.todo-count strong').text(resultText);
-
+				if(leftActiveTodos == 1){
+					resultText = leftActiveTodos + " item left";
+				}
+				else{
+					resultText = leftActiveTodos + " items left";
+				}
+				$('.todo-count strong').text(resultText);
+			}).fail(function(error){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
+			})
 		},
 
 		create: function (event) {
@@ -141,25 +148,6 @@
 				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
 				location.href = "./";
 			})
-		},
-
-		// 삭제예정
-		fetchAllTodos: function(){
-			var ret;
-			$.ajax({
-				"url": "./api/todos",
-				"method": "GET",
-				"dataType": "json",
-				"async": false,
-				success: function(data){
-					ret = data;
-				},
-				error: function() {
-					alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-					location.href = "./";
-				}
-			})
-			return ret;
 		},
 
 		getTodos: function(urlpath){
