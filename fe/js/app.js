@@ -133,27 +133,21 @@
 			}
 
 			$.ajax({
-		        "async": false,
-		        "crossDomain": true,
 		        "url": "./api/todos",
 		        "method": "POST",
 		        "headers": {
 		          "content-type": "application/json",
-		          "cache-control": "no-cache"
 		        },
-		        "processData": false,
 		        "data": JSON.stringify({
 		            "todo":val
 		        }),
-		        "dataType":"json",
-				error: function() {
-  				    alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-  				    location.href = "./";
-  			  	}
-		    })
-
-			$input.val('');
-			this.render();
+		    }).done(function(data){
+				$input.val("");
+				App.render();
+			}).fail(function(error){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
+			})
 		},
 
 		destroy: function(event) {
