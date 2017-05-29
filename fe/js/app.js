@@ -171,6 +171,7 @@
 			})
 		},
 
+		// 삭제예정
 		fetchAllTodos: function(){
 			var ret;
 			$.ajax({
@@ -191,15 +192,14 @@
 
 		getTodos: function(urlpath){
 			$.ajax({
-				"async": false,
 				"url": "./api/todos/" + urlpath,
 				"method": "GET",
 				"dataType": "json",
-				"success": this.draw,
-				error: function() {
-					alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-					location.href = "./";
-				}
+			}).done(function(data){
+				App.draw(data);
+			}).fail(function(error){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
 			})
 		},
 
