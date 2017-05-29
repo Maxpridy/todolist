@@ -14,6 +14,7 @@
 
 		render: function () {
 			this.todos = this.fetchAllTodos();
+			console.log(App.todos);
 			this.FilteredTodos();
 			this.getActiveTodoNumsAndS();
 			$('#new-todo').focus();
@@ -96,11 +97,14 @@
 		getActiveTodoNumsAndS: function(){
 			var leftActiveTodos = 0;
 			var resultText;
+			console.log(this.todos);
+			console.log(App.todos);
 			for (var i=0; i<this.todos.length; i++){
 				if(this.todos[i].completed == 0){
 					leftActiveTodos++;
 				}
 			}
+
 
 			if(leftActiveTodos == 1){
 				resultText = leftActiveTodos + " item left";
@@ -154,21 +158,17 @@
 			var delid = $(event.target).closest('li').data('id');
 
 			$.ajax({
-				"async": false,
-				"crossDomain": true,
 				"url": "./api/todos/" + delid,
 				"method": "DELETE",
 				"headers": {
 				  "content-type": "application/json",
-				  "cache-control": "no-cache"
-			  },
-			  error: function() {
-				  alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-				  location.href = "./";
-			  }
-			});
-
-			this.render();
+			  	}
+			}).done(function(data){
+				App.render();
+			}).fail(function(){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
+			})
 		},
 
 		fetchAllTodos: function(){
