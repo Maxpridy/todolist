@@ -224,23 +224,18 @@
 		},
 
 		clearCompleted: function(){
-			STATE = 0;
 			$.ajax({
-				"async": false,
-				"crossDomain": true,
 				"url": "./api/todos/",
 				"method": "DELETE",
 				"headers": {
 					"content-type": "application/json",
-					"cache-control": "no-cache",
-				},
-				error: function() {
-					alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
-					location.href = "./";
 				}
-			});
-
-			this.allRender();
+			}).done(function(){
+				App.render();
+			}).fail(function(){
+				alert("에러가 발생했습니다. 첫 페이지로 돌아갑니다.");
+				location.href = "./";
+			})
 		}
 	};
 
